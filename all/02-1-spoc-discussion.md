@@ -15,7 +15,7 @@
 ## 3.3 中断、异常和系统调用比较
  1. 举例说明Linux中有哪些中断，哪些异常？
  1. Linux的系统调用有哪些？大致的功能分类有哪些？  (w2l1)
- >Linux的系统调用有200多条。调用有 进程控制，文件系统控制，系统控制，存管管理，网络管理，socket控制，用户管理，进程间通信
+>Linux的系统调用有200多条。调用有 进程控制，文件系统控制，系统控制，存管管理，网络管理，socket控制，用户管理，进程间通信
 
 ```
   + 采分点：说明了Linux的大致数量（上百个），说明了Linux系统调用的主要分类（文件操作，进程管理，内存管理等）
@@ -39,6 +39,21 @@
 ## 3.4 linux系统调用分析
  1. 通过分析[lab1_ex0](https://github.com/chyyuu/ucore_lab/blob/master/related_info/lab1/lab1-ex0.md)了解Linux应用的系统调用编写和含义。(w2l1)
  >objdump将.exe文件反汇编。nm可以列出文件符号清单，file可以列出文件的属性和类型。这里显示了这是一个可执行的文件。
+.include "defines.h"
+.data
+hello:
+	.string "hello world\n"
+
+.globl	main
+main:
+	movl	$SYS_write,%eax
+	movl	$STDOUT,%ebx
+	movl	$hello,%ecx
+	movl	$12,%edx
+	int	$0x80
+
+	ret
+	代码中.data指定了数据段。其中定义了hello是一个"hello world"的字符串。之后定义全局的符号main。之后再寄存器eax上指定系统输出指令，ebx上指定到标准屏幕输出，ecx上指定需要输出的字符串是之前定义的数据段hello，edx上指定了输出长度是12，最后intx80退出结束，最后ret返回函数。
 
  ```
   + 采分点：说明了objdump，nm，file的大致用途，说明了系统调用的具体含义
