@@ -54,8 +54,29 @@ lab1中的cprintf函数最终通过哪些外设完成了对字符串的输出？
 
 lab1中printfmt函数用到了可变参，请参考写一个小的linux应用程序，完成实现定义和调用一个可变参数的函数。(spoc)
 - [x]  
+>code:
+```
+inlcude "stdio.h"
+include "cstdlib"
+using namespace std;
+void tpoo(int i, ...){
+  va_list vl;
+  int temp=0;
+  temp=va_start(vl, i)
+  while (temp != -1) {
+    printf("%d\n", temp);
+    temp=va_arg(vl, int);
+  }
+  va_end(vl);
+}
 
+int main(int argn, char** argv){
+  tpoo(1, 2, 3, 4, -1);
+  return 0;
+}
 
+```
+>上述代码使用不定参数，输出结果位1,2,3,4
 
 如果让你来一个阶段一个阶段地从零开始完整实现lab1（不是现在的填空考方式），你的实现步骤是什么？（比如先实现一个可显示字符串的bootloader（描述一下要实现的关键步骤和需要注意的事项），再实现一个可加载ELF格式文件的bootloader（再描述一下进一步要实现的关键步骤和需要注意的事项）...） (spoc)
 - [x]  
