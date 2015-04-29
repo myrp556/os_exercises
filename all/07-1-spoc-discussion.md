@@ -110,9 +110,7 @@ int FetchAndAdd(int *ptr) {
   return old;
 }
 ```
->
 ```
-
 flag.s:
 	设置i=1,2出现反例
 	执行错误
