@@ -110,3 +110,27 @@ int FetchAndAdd(int *ptr) {
   return old;
 }
 ```
+>
+```
+
+flag.s:
+	设置i=1,2出现反例
+	执行错误
+perterson:
+	设置i=1,2出现反例
+	执行错误
+test-and-set.s, test-and-test-and-set:
+	指令1 python x86.py -p test-and-set.s -a bx=2 -t 2 -i 2 -R ax -c
+		执行2个线程，设置循环执行2次，切换频率为2，显示ax寄存器的内容
+	指令2 python x86.py -p test-and-set.s -a bx=2 -t 2 -i 1 -R ax -c
+		执行2个线程，设置循环执行2次，切换频率为1，显示ax寄存器的内容
+	在线程0首先执行到aquire的时候检查发现没有上锁，因此可以进入下一步执行，
+	另外一个线程则因为metex已经被赋值而不能进入临界区，继续等待线程0执行完毕。
+	等到线程0完成一次临界区访问后解锁，切换到线程1就可以让线程1进入临界区执行。
+	从执行的结果中看到，可以完成互斥锁的功能。
+ticket.s:
+	参数-t 3 -i 1
+	执行结果正确
+```
+
+
