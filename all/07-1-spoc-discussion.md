@@ -41,14 +41,51 @@
 2. （spoc)了解race condition. 进入[race-condition代码目录](https://github.com/chyyuu/ucore_lab/tree/master/related_info/lab7/race-condition)。
 
  - 执行 `./x86.py -p loop.s -t 1 -i 100 -R dx`， 请问`dx`的值是什么？
+ ```
+ 程序只有一个线程0
+ dx=-1
+ ```
  - 执行 `./x86.py -p loop.s -t 2 -i 100 -a dx=3,dx=3 -R dx` ， 请问`dx`的值是什么？
+ ```
+ 程序分开成两个线程开始分别运行，线程0结束后才运行线程1
+ dx=-1
+ ```
  - 执行 `./x86.py -p loop.s -t 2 -i 3 -r -a dx=3,dx=3 -R dx`， 请问`dx`的值是什么？
+ ```
+ 线程分成两个线程执行。
+ dx=-1
+ ```
  - 变量x的内存地址为2000, `./x86.py -p looping-race-nolock.s -t 1 -M 2000`, 请问变量x的值是什么？
+ ```
+ 程序只有一个线程0，变量x是1
+ ```
  - 变量x的内存地址为2000, `./x86.py -p looping-race-nolock.s -t 2 -a bx=3 -M 2000`, 请问变量x的值是什么？为何每个线程要循环3次？
+ ```
+ 程序分开成两个线程开始分别运行，线程0结束后才运行线程1，线程0结束后线程1开始在x上同样开始加值。
+ x=6
+ 每个线程循环3次为了使每个线程执行足够的指令。
+ ```
  - 变量x的内存地址为2000, `./x86.py -p looping-race-nolock.s -t 2 -M 2000 -i 4 -r -s 0`， 请问变量x的值是什么？
+ ```
+ 程序分成两个线程执行并相互切换。
+ x=2
+ 在中途对x变量读取或者写入出现了冲突
+ ```
  - 变量x的内存地址为2000, `./x86.py -p looping-race-nolock.s -t 2 -M 2000 -i 4 -r -s 1`， 请问变量x的值是什么？
+ ```
+ 情况同上
+ x=1
+ ```
  - 变量x的内存地址为2000, `./x86.py -p looping-race-nolock.s -t 2 -M 2000 -i 4 -r -s 2`， 请问变量x的值是什么？ 
+ ```
+ 情况同上
+ x=1
+ ```
  - 变量x的内存地址为2000, `./x86.py -p looping-race-nolock.s -a bx=1 -t 2 -M 2000 -i 1`， 请问变量x的值是什么？ 
+ ```
+ 每个线程都是执行一条指令就切换。
+ x=1
+ ```
 
 3. （spoc） 了解software-based lock, hardware-based lock, [software-hardware-lock代码目录](https://github.com/chyyuu/ucore_lab/tree/master/related_info/lab7/software-hardware-locks)
 
