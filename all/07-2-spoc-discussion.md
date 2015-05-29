@@ -51,3 +51,116 @@ s.count--;              //有可用资源，占用该资源；
 ## 小组思考题
 
 1. （spoc） 每人用python threading机制用信号量和条件变量两种手段分别实现[47个同步问题](07-2-spoc-pv-problems.md)中的一题。向勇老师的班级从前往后，陈渝老师的班级从后往前。请先理解[]python threading 机制的介绍和实例](https://github.com/chyyuu/ucore_lab/tree/master/related_info/lab7/semaphore_condition)
+```
+#coding=utf-8
+"""
+condition
+STU CODE 2012011288
+EX NO 14
+"""
+import threading
+import time
+
+condition=threading.Condition();
+cou1=0;
+cou2=0;
+m=1;
+n=6;
+
+class WrireThread1(threading.Thread):
+	def __init__(self):
+		threading.Thread.__init__(self);
+	
+	def run(self):
+		global condition, cou1, cou2, n, m;
+		print "This is Thread 1.";
+		while (True):
+                        if (condition.acquire()):
+                                if (cou1+1-cou2)<n:
+                                        cou1+=1;
+                                        print "Thread1 write to buf1. Now buf1 is %d, buf2 is %d, minus is %d" %(cou1, cou2, cou1-cou2);
+                                        condition.notify();
+                                else:
+                                        condition.wait();
+                                condition.release();
+                                time.sleep(1);
+
+
+class WrireThread2(threading.Thread):
+	def __init__(self):
+		threading.Thread.__init__(self);
+	
+	def run(self):
+		global condition, cou1, cou2, n, m;
+		print "This is Thread 2.";
+		while (True):
+                        if (condition.acquire()):
+                                if (cou1-cou2-1)>m:
+                                        cou2+=1;
+                                        print "Thread2 write to buf2. Now buf1 is %d, buf2 is %d, minus is %d" %(cou1, cou2, cou1-cou2);
+                                        condition.notify();
+                                else:
+                                        condition.wait();
+                                condition.release();
+                                time.sleep(1);
+
+if __name__ == "__main__":
+	t1=WrireThread1();
+	t2=WrireThread2();
+	t1.start();
+	t2.start();
+
+```
+```
+#coding=utf-8
+"""
+semaphore
+STU CODE 2012011288
+EX NO 14
+"""
+import threading
+import time
+
+semaphore;
+cou1=0;
+cou2=0;
+m=1;
+n=6;
+
+class WrireThread1(threading.Thread):
+	def __init__(self):
+		threading.Thread.__init__(self);
+	
+	def run(self):
+		global semaphore, cou1, cou2, n, m;
+		print "This is Thread 1.";
+		while (True):
+                        semaphore.acquire();
+                        if (cou1<m):
+                                semaphore.release();
+                        cou1+=1;
+                        print "Thread1 write to buf1. Now buf1 is %d, buf2 is %d, minus is %d" %(cou1, cou2, cou1-cou2);
+                        sleep(1);
+                        
+
+class WrireThread2(threading.Thread):
+	def __init__(self):
+		threading.Thread.__init__(self);
+	
+	def run(self):
+		global semaphore, cou1, cou2, n, m;
+		print "This is Thread 2.";
+		while (True):
+                        semaphore.release();
+                        cou2+=1;
+                        print "Thread2 write to buf2. Now buf1 is %d, buf2 is %d, minus is %d" %(cou1, cou2, cou1-cou2);
+                        sleep(1);
+                        
+if __name__ == "__main__":
+        samephore=threading.Semaphore(n-m);
+	t1=WrireThread1();
+	t2=WrireThread2();
+	t1.start();
+	t2.start();
+
+```
